@@ -25,9 +25,21 @@ export const PurchaseModal:React.FC<purchaseModalProps> = ({ lineId, list }) => 
     duration: 5000,
   })
 
-  const writeKV = () => {
+  const writeKV = async () => {
     console.log(lineId)
     console.log(JSON.stringify(list));
+    await fetch('api/data', {
+      method: 'POST',
+      headers: {
+        "Content-type": 'application/json'
+      },
+      body: JSON.stringify(
+        {
+          key: lineId,
+          value: JSON.stringify(list)
+        }
+      )
+    })
     showToast({status: 'success', message: '購入を承りました', duration: 5000})
   }
 
