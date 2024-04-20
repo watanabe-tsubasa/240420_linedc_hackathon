@@ -28,7 +28,7 @@ export const PurchaseModal:React.FC<purchaseModalProps> = ({ lineId, list }) => 
   const writeKV = async () => {
     console.log(lineId)
     console.log(JSON.stringify(list));
-    await fetch('api/data', {
+    await fetch('api/', {
       method: 'POST',
       headers: {
         "Content-type": 'application/json'
