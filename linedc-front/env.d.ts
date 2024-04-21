@@ -2,4 +2,5 @@
 // by running `wrangler types --env-interface CloudflareEnv env.d.ts`
 
 interface CloudflareEnv {
+  _0421_LINEDC_HACK: KVNamespace
 }

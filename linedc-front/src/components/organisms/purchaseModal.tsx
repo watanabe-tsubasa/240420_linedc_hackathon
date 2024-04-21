@@ -29,7 +29,7 @@ export const PurchaseModal:React.FC<purchaseModalProps> = ({ lineId, list }) => 
     console.log(lineId)
     console.log(JSON.stringify(list));
     await fetch('api/data', {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         "Content-type": 'application/json'
       },

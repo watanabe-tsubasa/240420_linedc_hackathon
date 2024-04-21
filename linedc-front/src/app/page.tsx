@@ -4,7 +4,8 @@ import { CardContainer } from "@/components/organisms/cardContainer";
 import { PurchaseModal } from "@/components/organisms/purchaseModal";
 import { productdata } from "@/utils/productdata";
 import { purchaseType, reducer, skuType } from "@/utils/reducer";
-import { useReducer } from "react";
+import { Liff } from "@line/liff";
+import { useEffect, useReducer, useState } from "react";
 
 export default function Home() {
   const lineId = '123456';
@@ -27,7 +28,56 @@ export default function Home() {
     const nonZeroSkus = elem.skus.filter(sku => sku.count !== 0);
     return acc.concat(nonZeroSkus);
   }, []);
-  
+
+  // liff
+  const [liffObject, setLiffObject] = useState<Liff | null>(null);
+  const [liffError, setLiffError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const liffId = process.env.NEXT_PUBLIC_LIFF_ID || '';
+    console.log(liffId)
+    import("@line/liff")
+      .then((liff) => liff.default)
+      .then((liff) => {
+        console.log("LIFF init...");
+        liff
+          .init({ liffId: liffId })
+          .then(() => {
+            console.log("LIFF init succeeded.");
+            setLiffObject(liff);
+            console.log(liffObject)
+          })
+          .catch((error: Error) => {
+            console.log("LIFF init failed.");
+            setLiffError(error.toString());
+            console.log(liffError);
+          });
+      });
+  }, []);
+
+
+
+  const [name, setName] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (liffObject && !liffObject.isLoggedIn()) {
+      liffObject.login({ redirectUri: "https://linedc-front.pages.dev/" });
+    }
+    liffObject?.getProfile()
+      .then((profile) => {
+        setName(profile.displayName);
+        setUserId(profile.userId);
+      })
+      .then(() => {
+        console.log(userId);
+        console.log(name);
+      })
+      .catch((error) => {
+        console.log("error:",error)
+      })
+  }, [liffObject])
+
   const total = calculateTotal(purchase);
   return (
     <main className="flex min-h-screen w-screen flex-col items-center justify-between">
