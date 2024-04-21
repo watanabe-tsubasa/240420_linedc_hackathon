@@ -9,11 +9,22 @@ import { useEffect, useReducer, useState } from "react";
 
 export default function Home() {
   const lineId = '123456';
-  const purcaseCategory = [
+
+  const [purchaseCategory, setPurchaseCategory] = useState<string[]>([
     '土物野菜',
     'カツ丼',
-  ]
-  const list = productdata.filter(elem => purcaseCategory.includes(elem.category))
+  ])
+  useEffect(() => {
+    // URLからクエリパラメータを取得する
+    const queryParams = new URLSearchParams(location.search);
+    const idParam = queryParams.get('id');
+    
+    if (idParam) {
+      setPurchaseCategory(JSON.parse(idParam));
+    }
+  }, []); // locationが変更された時に再実行
+
+  const list = productdata.filter(elem => purchaseCategory.includes(elem.category))
   
   const [purchase, dispatch] = useReducer(reducer, list);
   const calculateTotal = (products: purchaseType[]) => {
